@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="101.6mm"
+   height="166.62401mm"
+   viewBox="0 0 101.6 166.62401"
+   version="1.1"
+   id="svg5"
+   xml:space="preserve"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="down-arrow.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.4014545"
+     inkscape:cx="104.51999"
+     inkscape:cy="230.2771"
+     inkscape:window-width="3840"
+     inkscape:window-height="2054"
+     inkscape:window-x="2869"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" /><defs
+     id="defs2" /><g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-32.167195,-15.211542)"><g
+       id="g509"
+       transform="matrix(0.33866667,0,0,-0.33866667,-3.7314718,185.22221)">
+	<g
+   id="g499">
+		<polygon
+   fill="#6e83b7"
+   points="326,210 406,210 256,10 106,210 186,210 186,366 326,366 "
+   id="polygon497" />
+	</g>
+	<g
+   id="g503">
+		<rect
+   x="186"
+   y="394"
+   fill="#6e83b7"
+   width="140"
+   height="40"
+   id="rect501" />
+	</g>
+	<g
+   id="g507">
+		<rect
+   x="186"
+   y="462"
+   fill="#6e83b7"
+   width="140"
+   height="40"
+   id="rect505" />
+	</g>
+</g></g></svg>

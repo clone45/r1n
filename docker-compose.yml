@@ -1,0 +1,63 @@
+services:
+
+  node-backend:
+    build: ./server
+    ports:
+      - "4000:4000"
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASS=guest
+      - AMQP_DOMAIN=rabbitmq
+      - AMQP_PORT=5672 # Since node-backend runs on the same network as rabbitmq, we use the default port 5672  
+      - STORAGE_DIR=/app/agents/storage
+      - PYTHON_SERVICE_URL=http://python-agent:8000
+      - CORS_ORIGIN=http://localhost:5000 # notice that this isn't react-frontend
+    volumes:
+      - ./storage:/app/storage
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    # Port mappings for the RabbitMQ service
+    # Map the RabbitMQ AMQP service port from 5672 in the container to 5673 on the host
+    # This avoids conflicts with any local RabbitMQ instance running on the default 5672 port
+    # The management UI remains accessible via the standard port 15672 on both host and container
+    ports:
+      - "5673:5672"   # Changed host port to 5673
+      - "15672:15672" # Management UI port remains the same      
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_MANAGEMENT_DISABLE_DB="true"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq     
+
+  react-frontend:
+    build: ./frontend
+    ports:
+      - "5000:5000"
+    environment:
+      # We use 'localhost' here because the react-frontend javascript is running on the host machine, 
+      # and the host machine cannot resolve 'http://node-backend:4000'.  
+      - NODE_BACKEND=http://localhost:4000
+
+  python-agent:
+    build: ./agents
+    environment:
+      - AGENTS_DIR=/app/agents
+      - STORAGE_DIR=/app/agents/storage
+      - AMQP_DOMAIN=rabbitmq
+      - AMQP_PORT=5672
+      - AMQP_USER=guest
+      - AMQP_PASS=guest
+      - OPEN_AI_KEY=${OPEN_AI_KEY}
+    volumes:
+      - ./agents:/app/agents
+      - ./storage:/app/agents/storage
+    ports:
+      - "8000:8000"
+
+volumes:
+  rabbitmq_data:

@@ -1,0 +1,46 @@
+import importlib
+import json
+
+from src.tools import Tools
+import os
+
+class toolLoader():
+    @staticmethod
+    def get_definition():
+        return {
+            "name": "toolLoader",
+            "description": "Dynamically loads a specified tool into the agent's environment.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "tool_name": {
+                        "type": "string",
+                        "description": "The name of the tool to be loaded."
+                    }
+                },
+                "required": ["tool_name"]
+            }
+        }
+
+    def run(self, io_handler=None):
+        tools_instance = Tools.get_instance()
+        tool_name = self.arguments.get('tool_name')
+
+        try:
+            if tool_name not in tools_instance.tool_path_map:
+                return json.dumps({"status": "error", "message": f"Tool {tool_name} not found in path map."})
+            
+            tool_path = os.path.join('tools', tools_instance.tool_path_map[tool_name])
+            # Convert file system path to Python module path
+            tool_module_name = tool_path.replace(os.sep, '.').replace('.py', '')
+
+            # Dynamically load the tool
+            tool_module = importlib.import_module(tool_module_name)
+            
+            # Add the loaded tool to the instance's tool set, if necessary
+            # (This part depends on how you manage the set of available tools in your agents)
+            # tools_instance.add_tool(tool_name, tool_module)
+
+            return json.dumps({"status": "success", "message": f"Tool {tool_name} loaded successfully."})
+        except Exception as e:
+            return json.dumps({"status": "error", "message": f"Error loading tool {tool_name}: {e}"})

@@ -1,0 +1,4 @@
+* comments and code in general should be less than 120 characters long, but use your best judgement.
+  - VS Code has a feature for drawing a vertical guide (ruler) at 120 characters which is helpful
+* tab settings should use spaces, not tabs, and be set to 4 spaces
+

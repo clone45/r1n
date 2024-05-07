@@ -1,0 +1,33 @@
+.large-checkbox {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fafafa;
+    border: 2px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #ccc; /* Default color for unchecked state */
+  }
+  
+  .large-checkbox i {
+    visibility: hidden; /* Hide by default */
+  }
+  
+  .large-checkbox.unchecked i {
+    visibility: visible; /* Show the checkmark in unchecked state */
+    color: #eee; /* Grey out the checkmark */
+  }
+  
+  .large-checkbox.checked {
+    background-color: #007bff; /* Bootstrap primary blue */
+    border-color: #007bff;
+    color: #fff; /* White checkmark */
+  }
+  
+  .large-checkbox.checked i {
+    visibility: visible; /* Ensure it's visible when checked */
+  }
+  

@@ -1,0 +1,21 @@
+Agents
+=======
+instance_uuid -- unique identifier
+name -- agent name
+role -- the role of the agent, such as Product Manager or Software Developer
+queue -- the queue that the agents listens on (usually agent_{uuid})
+capabilities
+
+messages
+=============
+from_name
+from_queue
+from_persona
+to_name
+to_queue
+to_persona
+cc_queue
+content
+message_type
+
+timestamp

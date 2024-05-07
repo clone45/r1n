@@ -1,0 +1,107 @@
+Here is the documentation for the provided source code:
+
+# Agent Framework Documentation
+
+This is an agent framework written in Python that allows you to create and manage agents capable of performing various tasks. The framework uses RabbitMQ as a message queue for communication between agents and provides an interface for interacting with language models, such as OpenAI's GPT.
+
+## Project Structure
+
+The project is structured as follows:
+
+```
+agent_source/
+├── agents/
+│   └── ... (Agent configuration files)
+├── config/
+│   └── logging_config.py (Logging configuration)
+├── src/
+│   ├── agent.py (Agent class)
+│   ├── io/
+│   │   ├── io_handler.py (Abstract IO Handler)
+│   │   └── rabbit_mq_io_handler.py (RabbitMQ IO Handler)
+│   ├── llm_adapters/
+│   │   ├── llm_adapter.py (Abstract LLM Adapter)
+│   │   └── open_ai_adapter.py (OpenAI LLM Adapter)
+│   ├── logging_helper.py (Helper functions for logging)
+│   ├── tool.py (Abstract Tool class)
+│   └── tools.py (Tool management)
+├── storage/
+│   └── chromaDB/
+│       └── data/ (ChromaDB data storage)
+├── tools/
+│   ├── agents/
+│   │   └── agentSpawn.py (Tool for spawning new agents)
+│   ├── chroma_db/
+│   │   ├── chromaDBClientDeleteCollection.py
+│   │   ├── chromaDBClientListCollections.py
+│   │   ├── chromaDBCollectionAddDocument.py
+│   │   ├── chromaDBCollectionGet.py
+│   │   └── chromaDBCollectionPeek.py
+│   ├── core/
+│   │   └── communicate.py (Tool for communication)
+│   └── file_system/
+│   │   └── fileSystemChangePermissions.py
+|   |   └── (additional tools)
+│   └── (additional tool folders)
+├── converse.py (Script for conversing with an agent)
+└── run.py (Main script for running an agent)
+```
+
+## Key Components
+
+### Agent (`src/agent.py`)
+
+The `Agent` class is the central component of the framework. It manages the creation and interaction with language models and tools. The agent can be initialized with various configurations, such as the agent folder, language model adapter, and whether to reset the assistant.
+
+The `Agent` class provides methods for loading agent configurations, creating assistants, interacting with the language model, and running tools.
+
+### IO Handler (`src/io/io_handler.py`, `src/io/rabbit_mq_io_handler.py`)
+
+The IO Handler is responsible for reading input and sending output messages. The framework includes an implementation of the IO Handler using RabbitMQ as the message queue system.
+
+The `RabbitMQIOHandler` class establishes a connection with RabbitMQ, declares a queue for the agent's queue, and provides methods for reading messages from the queue and sending messages to other queues (agents or users).
+
+### Language Model (LLM) Adapter (`src/llm_adapters/llm_adapter.py`, `src/llm_adapters/open_ai_adapter.py`)
+
+The LLM Adapter is an abstract class that defines the interface for interacting with language models. The framework includes an implementation of the LLM Adapter for OpenAI's GPT.
+
+The `OpenAIAdapter` class handles operations such as creating threads, assistants, messages, and runs. It also provides methods for submitting tool outputs and retrieving assistant messages.
+
+### Tools (`src/tool.py`, `src/tools.py`, `tools/`)
+
+Tools are the building blocks of the agent framework. They encapsulate various functions and capabilities that the agent can leverage to perform tasks.
+
+The `Tool` class is an abstract base class that defines the interface for tools. Each tool must implement the `get_definition` method, which returns a dictionary describing the tool's name, description, and parameters.
+
+The `Tools` class manages the tool loading process and provides methods for dynamically loading and executing tools.
+
+The `tools/` directory contains implementations of various tools, such as tools for interacting with ChromaDB, spawning new agents, communicating with other agents, and managing file system permissions.
+
+### Agent Configuration (`agents/`)
+
+The `agents/` directory contains configuration files for different agents. Each agent has an `agent.json` file that defines the agent's name, instructions, tools, and language model.
+
+## Key Scripts
+
+### `run.py`
+
+This is the main entry point for running an agent. It initializes the agent, the IO handler, and listens for incoming messages. When a message is received, it passes it to the agent for processing and writes the response to the output.
+
+### `converse.py`
+
+This script allows you to converse with an agent by sending messages to its queue and receiving responses. It establishes a connection with RabbitMQ, sends messages to the agent's queue, and prints the agent's responses.
+
+## Usage
+
+To run an agent, execute the `run.py` script with the desired agent folder and agent ID:
+
+```
+python run.py --agent_folder <agent_folder> --id <agent_id>
+```
+
+To converse with an agent, run the `converse.py` script with the recipient's mailbox name (the agent's queue):
+
+```
+python converse.py <recipient_mailbox_name>
+```
+

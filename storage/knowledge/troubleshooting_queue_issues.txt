@@ -1,0 +1,14 @@
+Let's consider a scenario where there is an issue with communication between agents in your system, and you need to troubleshoot it using the tools we've created: getSingleMessage, inspectQueue, purgeQueue, and declareQueue. Here's an example of how these tools might be used in sequence to diagnose and address the problem:
+
+Scenario: Agents are not receiving messages as expected.
+Step 1: Inspect the Queue
+First, use the inspectQueue tool to check the state of the queue. This will help you understand if there are messages piled up in the queue or if there are no messages at all, which might indicate different issues.
+
+Step 2: Get a Single Message
+If the inspectQueue tool indicates that there are messages in the queue, use the getSingleMessage tool to fetch a single message from the queue. This can help you understand if the messages are being formed correctly or if there's an issue with the message content.
+
+Step 3: Purge the Queue
+If you find that the queue is clogged with irrelevant or old messages, you may decide to purge the queue to reset its state using purgeQueue.
+
+Step 4: Identifying mailboxes
+If you need to find out what's likely to be listening for queue messages, try using the guestbookRead tool.
