@@ -20,6 +20,8 @@ class OpenAIAgent(Agent):
         self.profile = profile
         self.assistant_id = self.profile.get('assistant_id', None)
 
+        print(f"OpenAIAgent - self.assistant_id: {self.assistant_id}")
+
         self.profiles_repository = ProfilesRepository()
 
         # Prepare and configure Papertrail logging
@@ -29,27 +31,20 @@ class OpenAIAgent(Agent):
         # Load the tools for the role
         tool_names = self.role.get('tools', [])
         tool_definitions = self._tools.load_tools(tool_names)
-        
-        
-        
-#        if self._assistant_id is None:
-#            self._assistant_id = self.create_assistant(role, tool_definitions)
-#        else:
-#            # Always update the assistant if it already exists
-#            # This is necessary because the assistant may have been updated, such as the instructions or tools
-#            self.update_assistant(role, tool_definitions)
+
+        # print(f"OpenAIAgent - tool_definitions: {tool_definitions}")
 
 
     # todo: is it necessary to pass in roll?  Can't we just use self.role?
-    def create_assistant(self, role, tool_definitions):
-        assistant_config = {
-            "instructions": role['instructions'],
-            "name": self.role['name'],
-            "model": role['model'],
-            "tools": tool_definitions
-        }
-        assistant = self.llm.create_assistant(assistant_config)
-        return assistant.id
+#    def create_assistant(self, role, tool_definitions):
+#        assistant_config = {
+#            "instructions": role['instructions'],
+#            "name": self.role['name'],
+#            "model": role['model'],
+#            "tools": tool_definitions
+#        }
+#        assistant = self.llm.create_assistant(assistant_config)
+#        return assistant.id
     
     # todo: is it necessary to pass in roll?  Can't we just use self.role?
     def update_assistant(self, role, tool_definitions):
@@ -61,18 +56,8 @@ class OpenAIAgent(Agent):
         }
         self.llm.update_assistant(self.assistant_id, assistant_config)
 
-    # todo: this needs rethinking
-
     def get_assistant_id(self):
         return self.assistant_id
-
-#    def get_assistant_id(self):
-#        # Check if the assistant already exists
-#        existing_assistants = self.llm.list_assistants()
-#        for assistant in existing_assistants.data:
-#            if assistant.name == self.role['name']:
-#                return assistant.id
-#        return None
 
     def upload_file(self, incoming_message):
 
@@ -149,8 +134,6 @@ class OpenAIAgent(Agent):
 
         else:
             self.logger.error(f"upload_file - File {file_path} does not exist.")
-            
-        
 
     def reset_assistant(self, role, tool_definitions):
         # TODO: rewrite this
@@ -181,9 +164,12 @@ class OpenAIAgent(Agent):
             \n\n
         """
 
-        # Send the message to the agent for processing.  The agent will (hopefully) not return a response
+        # Send the message to the agent for processing
+        # Keep in mind that we're not interested in the direct response.  The agent should be using the communicate
+        # tool to respond to messages.  The direct response is only used for debugging purposes.
         try:
 
+            print("Notifying UI of thinking started")
             self.notify_ui_of_thinking_started()
 
             # This will block until the response is received
@@ -197,6 +183,7 @@ class OpenAIAgent(Agent):
 
             self.logger.debug(f"interact() - Direct LLM Response: {direct_response}")
 
+            print("Notifying UI of thinking completed")
             self.notify_ui_of_thinking_completed()
 
         except Exception as e:

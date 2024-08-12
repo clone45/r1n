@@ -122,18 +122,6 @@ def main():
     instance_uuid = args.instance_uuid
     agent_general_queue_name = f"queue_{instance_uuid}"  # Inbox for receiving messages
 
-    # The profile_uuid is used to reference the profile file name in config/profiles
-    # An example is config/profiles/7e86b06a-f896-4b4e-b7c4-7ab44fe42ab0.json
-    # Example contents of the profile file:
-    # {
-    #     "uuid": "7e86b06a-f896-4b4e-b7c4-7ab44fe42ab0",    
-    #     "name": "Rin",
-    #     "role_uuid": "54f9fd90-7205-450e-a195-24e9b43bbb25",
-    #     "avatar": "rin.png",
-    #     "description": "You are a friendly agent named Rin.",
-    #     "welcome_message": "Hey... I'm glad you're here."
-    # }
-
     profile_data = profiles_repository.get(args.profile_uuid)
     role_data = roles_repository.get(profile_data['role_uuid'])
 

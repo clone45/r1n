@@ -30,7 +30,7 @@ class AgentFactory:
 
     def create_agent(self, instance_uuid, profile, role, reset_assistant, thread, io_handler):
 
-        llm_model = role.get('model', 'gpt-4-1106-preview')
+        llm_model = role.get('model', 'gpt-4o-2024-08-06')
         model_config = self.agent_class_map.get(llm_model)
 
         if model_config:

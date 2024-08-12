@@ -7,7 +7,6 @@ from src.logging.logging_config import setup_papertrail_logging
 from src.tools.tool_manager import ToolManager
 from dotenv import load_dotenv
 from src.llm_adapters.llm_adapter import LLMAdapter
-import asyncio
 
 class OpenAIAdapter(LLMAdapter):
     def __init__(self, thread_id=None):
@@ -37,12 +36,12 @@ class OpenAIAdapter(LLMAdapter):
     def list_assistants(self):
         return self.client.beta.assistants.list()
 
-    def create_assistant(self, assistant_config):
-        try:
-            return self.client.beta.assistants.create(**assistant_config)
-        except Exception as e:
-            self.logger.error(f"An error occurred while creating an assistant.  This may occur if Open AI's APIs are temporarily down, or if there are network connection issues. The exception is: {e}")
-            return None
+#    def create_assistant(self, assistant_config):
+#        try:
+#            return self.client.beta.assistants.create(**assistant_config)
+#        except Exception as e:
+#            self.logger.error(f"An error occurred while creating an assistant.  This may occur if Open AI's APIs are temporarily down, or if there are network connection issues. The exception is: {e}")
+#            return None
         
     def update_assistant(self, assistant_id, assistant_config):
         return self.client.beta.assistants.update(assistant_id, **assistant_config)
@@ -116,6 +115,9 @@ class OpenAIAdapter(LLMAdapter):
     
 
     def call_tools(self, tool_calls, io_handler=None):
+
+        print(f"tool_calls: {tool_calls}")
+
         tool_outputs = []
         for tool_call in tool_calls:
             
@@ -129,6 +131,8 @@ class OpenAIAdapter(LLMAdapter):
                 function_response = tool_instance.run(io_handler)
                 tool_output = {"tool_call_id": tool_call.id, "output": json.dumps(function_response)}
                 tool_outputs.append(tool_output)
+
+                print(f"Tool output: {tool_output}")
                 
             except Exception as e:
 
@@ -169,34 +173,35 @@ class OpenAIAdapter(LLMAdapter):
         run = self.client.beta.threads.runs.create(
             thread_id=self.thread_id,
             assistant_id=assistant_id,
-            instructions=instructions
+            instructions=instructions,
+            # tool_choice={"type": "function", "function": {"name": "communicate"}}
         )
 
         while True:
-            time.sleep(2)  # Define your polling interval here
+            time.sleep(2)
             run = self.client.beta.threads.runs.retrieve(thread_id=self.thread_id, run_id=run.id)
-            if run.status != 'in_progress':
-                break
+            print(f"Run status: {run.status}")
 
-        # Handle run statuses
-        if run.status == 'requires_action':
-            # Handle function calls
-            tool_outputs = self.call_tools(run.required_action.submit_tool_outputs.tool_calls, io_handler)
-            self.client.beta.threads.runs.submit_tool_outputs(
-                thread_id=self.thread_id,
-                run_id=run.id,
-                tool_outputs=tool_outputs
-            )
+            # Handle run statuses
+            if run.status == 'requires_action':
+                # Handle function calls
+                tool_outputs = self.call_tools(run.required_action.submit_tool_outputs.tool_calls, io_handler)
+                self.client.beta.threads.runs.submit_tool_outputs(
+                    thread_id=self.thread_id,
+                    run_id=run.id,
+                    tool_outputs=tool_outputs
+                )
 
-        # RUN STATUS: COMPLETED
-        elif run.status == "completed":
-            response_message = self.get_response(self.thread_id)
-            return {"response": response_message, "status_code": 200}
-        
-        # RUN STATUS: EXPIRED | FAILED | CANCELLED | INCOMPLETE
-        elif run.status in ['expired', 'failed', 'cancelled', 'incomplete']:
-            error_details = run.last_error.message if run.last_error else 'No error details'
-            return {"response": error_details, "status_code": 500}
+            # RUN STATUS: COMPLETED
+            elif run.status == "completed":
+                # response_message = self.get_response(self.thread_id)
+                response_message = self.get_last_assistant_message()
+                return {"response": response_message, "status_code": 200}
+            
+            # RUN STATUS: EXPIRED | FAILED | CANCELLED | INCOMPLETE
+            elif run.status in ['expired', 'failed', 'cancelled', 'incomplete']:
+                error_details = run.last_error.message if run.last_error else 'No error details'
+                return {"response": error_details, "status_code": 500}
 
 
 

@@ -79,8 +79,6 @@ class ToolManager:
 
     def load_tools(self, tool_names):
 
-        # tool_names = self._convert_tool_paths_to_tool_names(tool_names)
-
         tool_definitions = []
         for tool in tool_names:
 
@@ -180,28 +178,6 @@ class ToolManager:
     # a path to a tool folder, such as "file_system".  If a tool folder is specified, then we
     # need to iterate through the folder recursively and replace the folder name in the tools_strings
     # list with the tool names.
-
-#    def _convert_tool_paths_to_tool_names(self, tool_strings):
-#        base_path = f"{self.tools_root}/"  # Base path of the tools directory
-#        updated_tool_strings = []
-#
-#        for tool in tool_strings:
-#            if tool.startswith('/'):
-#                folder_path = os.path.join(base_path, tool[1:])  # Construct the full path
-#
-#                # Check if the path exists and is a directory
-#                if os.path.exists(folder_path) and os.path.isdir(folder_path):
-#                    for root, dirs, files in os.walk(folder_path):
-#                        for file in files:
-#                            if file.endswith('.py') and not file.startswith('__'):
-#                                tool_name = os.path.splitext(file)[0]
-#                                updated_tool_strings.append(tool_name)
-#                else:
-#                    logging.error(f"__Warning: Tool path {folder_path} does not exist or is not a directory.  Tools root is {self.tools_root}")
-#            else:
-#                updated_tool_strings.append(tool)
-#
-#        return updated_tool_strings
     
     def _convert_tool_path_to_tool_names(self, tool_string):
         base_path = f"{self.tools_root}/"  # Base path of the tools directory

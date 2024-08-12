@@ -1,5 +1,8 @@
 Next:
 
+
+see: https://chat.openai.com/share/bbc69a30-c117-4e33-a887-dbecc0214fb8
+
 * 
 
 - persist threads
@@ -18,7 +21,6 @@ start application
 load team
 ask Rin to list out the files in the current work directory
 ask Rin to identify other team members
-ask Rin to ask  other agent a single 
 
 
 Rin, does Jenna have any tools that she can utilize for us?
